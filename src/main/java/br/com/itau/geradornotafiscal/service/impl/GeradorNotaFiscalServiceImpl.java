@@ -3,6 +3,7 @@ package br.com.itau.geradornotafiscal.service.impl;
 import br.com.itau.geradornotafiscal.model.*;
 import br.com.itau.geradornotafiscal.service.CalculadoraAliquotaProduto;
 import br.com.itau.geradornotafiscal.service.GeradorNotaFiscalService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -11,7 +12,10 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class GeradorNotaFiscalServiceImpl implements GeradorNotaFiscalService{
+	private final CalculadoraAliquotaProduto calculadoraAliquotaProduto;
+
 	@Override
 	public NotaFiscal gerarNotaFiscal(Pedido pedido) {
 
@@ -19,8 +23,6 @@ public class GeradorNotaFiscalServiceImpl implements GeradorNotaFiscalService{
 		TipoPessoa tipoPessoa = destinatario.getTipoPessoa();
 		List<ItemNotaFiscal> itemNotaFiscalList = new ArrayList<>();
 
-
-		CalculadoraAliquotaProduto calculadoraAliquotaProduto = new CalculadoraAliquotaProduto();
 
 		if (tipoPessoa == TipoPessoa.FISICA) {
 			double valorTotalItens = pedido.getValorTotalItens();
