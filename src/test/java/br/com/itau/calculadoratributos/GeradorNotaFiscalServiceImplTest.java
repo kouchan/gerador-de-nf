@@ -4,10 +4,14 @@ import br.com.itau.geradornotafiscal.model.*;
 import br.com.itau.geradornotafiscal.service.CalculadoraAliquotaProduto;
 import br.com.itau.geradornotafiscal.service.impl.GeradorNotaFiscalServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.extension.Extensions;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -33,6 +37,9 @@ public class GeradorNotaFiscalServiceImplTest {
 
 
     @Test
+    @DisplayName("Dado pedidos para PF com valor total ate 500" +
+            " Quando Calcular Aliquota" +
+            " Entao Gerar NF com 1 item, ValorTributoItem 0")
     public void shouldGenerateNotaFiscalForTipoPessoaFisicaWithValorTotalItensLessThan500() {
         Pedido pedido = new Pedido();
         pedido.setValorTotalItens(400);
@@ -44,7 +51,7 @@ public class GeradorNotaFiscalServiceImplTest {
         Endereco endereco = new Endereco();
         endereco.setFinalidade(Finalidade.ENTREGA);
         endereco.setRegiao(Regiao.SUDESTE);
-        destinatario.setEnderecos(Arrays.asList(endereco));
+        destinatario.setEnderecos(List.of(endereco));
 
         pedido.setDestinatario(destinatario);
 
@@ -52,7 +59,17 @@ public class GeradorNotaFiscalServiceImplTest {
         Item item = new Item();
         item.setValorUnitario(100);
         item.setQuantidade(4);
-        pedido.setItens(Arrays.asList(item));
+        pedido.setItens(List.of(item));
+
+        //When calculadoraAliquotaProduto
+        when(calculadoraAliquotaProduto.calcularAliquota(List.of(item), 0))
+                .thenReturn(List.of(ItemNotaFiscal.builder()
+                        .idItem("")
+                        .descricao("")
+                        .quantidade(item.getQuantidade())
+                        .valorTributoItem(0)
+                        .valorUnitario(item.getValorUnitario()).build()));
+
 
         NotaFiscal notaFiscal = geradorNotaFiscalService.gerarNotaFiscal(pedido);
 
@@ -62,6 +79,9 @@ public class GeradorNotaFiscalServiceImplTest {
     }
 
     @Test
+    @DisplayName("Dado pedidos para PJ e RegimeTributacaoPJ LUCRO_PRESUMIDO e com valor total maior que 5000" +
+            " Quando Calcular Aliquota" +
+            " Entao Gerar NF com 1 item, ValorTributoItem 0.20")
     public void shouldGenerateNotaFiscalForTipoPessoaJuridicaWithRegimeTributacaoLucroPresumidoAndValorTotalItensGreaterThan5000() {
         Pedido pedido = new Pedido();
         pedido.setValorTotalItens(6000);
@@ -83,6 +103,16 @@ public class GeradorNotaFiscalServiceImplTest {
         item.setValorUnitario(1000);
         item.setQuantidade(6);
         pedido.setItens(Arrays.asList(item));
+
+        Double aliquotaEsperada = 0.20;
+
+        when(calculadoraAliquotaProduto.calcularAliquota(List.of(item), aliquotaEsperada))
+                .thenReturn(List.of(ItemNotaFiscal.builder()
+                        .idItem("")
+                        .descricao("")
+                        .quantidade(item.getQuantidade())
+                        .valorTributoItem(item.getValorUnitario()*aliquotaEsperada)
+                        .valorUnitario(item.getValorUnitario()).build()));
 
         NotaFiscal notaFiscal = geradorNotaFiscalService.gerarNotaFiscal(pedido);
 
