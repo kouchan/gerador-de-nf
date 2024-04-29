@@ -1,6 +1,6 @@
 package br.com.itau.geradornotafiscal.core.service.aliquota;
 
-import br.com.itau.geradornotafiscal.core.model.RegimeTributacaoPJ;
+import br.com.itau.geradornotafiscal.core.model.enums.RegimeTributacaoPJ;
 import br.com.itau.geradornotafiscal.core.service.TaxaAliquotaService;
 import org.springframework.stereotype.Component;
 

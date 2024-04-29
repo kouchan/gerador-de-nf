@@ -1,4 +1,4 @@
-package br.com.itau.geradornotafiscal.core.model;
+package br.com.itau.geradornotafiscal.core.model.enums;
 
 
 public enum Regiao {

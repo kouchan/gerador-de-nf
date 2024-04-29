@@ -1,9 +1,9 @@
 package br.com.itau.geradornotafiscal.core.exception;
 
-import br.com.itau.geradornotafiscal.core.model.NotaFiscal;
+import br.com.itau.geradornotafiscal.core.model.Pedido;
 
-public class RegistroNfException extends IntegrationException {
-    public RegistroNfException(NotaFiscal notaFiscal) {
-        super("Erro ao registrar a nota fiscal: "+  notaFiscal.getIdNotaFiscal() +", Não pudemos continuar com a operação.");
+public class EnderecoNaoCadastradoException extends IntegrationException {
+    public EnderecoNaoCadastradoException(Pedido pedido) {
+        super("Erro ao registrar a nota fiscal para o pedido: "+  pedido.getIdPedido() +", Não pudemos continuar com a operação.");
     }
 }

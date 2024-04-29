@@ -1,13 +1,19 @@
 package br.com.itau.geradornotafiscal.core.usecase.impl;
 
-import br.com.itau.geradornotafiscal.core.exception.RegimeTributacaoNaoEncontrada;
+import br.com.itau.geradornotafiscal.core.exception.EnderecoNaoCadastradoException;
+import br.com.itau.geradornotafiscal.core.exception.RegimeTributacaoException;
 import br.com.itau.geradornotafiscal.core.model.*;
+import br.com.itau.geradornotafiscal.core.model.enums.Finalidade;
+import br.com.itau.geradornotafiscal.core.model.enums.Regiao;
+import br.com.itau.geradornotafiscal.core.model.enums.RegimeTributacaoPJ;
+import br.com.itau.geradornotafiscal.core.model.enums.TipoPessoa;
 import br.com.itau.geradornotafiscal.core.service.*;
 import br.com.itau.geradornotafiscal.core.usecase.GerarNotaFiscalUseCase;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -24,6 +30,7 @@ public class GerarNotaFiscalUseCaseImpl implements GerarNotaFiscalUseCase {
     private final RegistroService registroService;
     private final EntregaService entregaService;
     private final FinanceiroService financeiroService;
+    private final FreteService freteService;
 
     @Override
     public NotaFiscal gerarNotaFiscal(final Pedido pedido) {
@@ -52,19 +59,20 @@ public class GerarNotaFiscalUseCaseImpl implements GerarNotaFiscalUseCase {
                     .stream()
                     .filter(aliquotaService -> aliquotaService.regimeTributario(regimeTributacaoPJ))
                     .findFirst()
-                    .orElseThrow(() -> new RegimeTributacaoNaoEncontrada(regimeTributacaoPJ));
+                    .orElseThrow(() -> new RegimeTributacaoException(regimeTributacaoPJ));
             Double aliquota = taxaAliquotaService.calculaPercentualAliquota(pedido.getValorTotalItens());
             itemNotaFiscalList = calculadoraAliquotaService.calcularAliquota(pedido.getItens(), aliquota);
         }
+
         //Regras diferentes para frete
 
         Regiao regiao = destinatario.getEnderecos().stream()
                 .filter(endereco -> endereco.getFinalidade() == Finalidade.ENTREGA || endereco.getFinalidade() == Finalidade.COBRANCA_ENTREGA)
                 .map(Endereco::getRegiao)
                 .findFirst()
-                .orElse(null);
+                .orElseThrow(() -> new EnderecoNaoCadastradoException(pedido));
 
-        double valorFreteComPercentual = calculaValorFreteComPercentual(pedido, regiao);
+        Double valorFreteComPercentual = freteService.calculaValorFreteComPercentual(pedido, regiao);
 
         // Create the NotaFiscal object
         String idNotaFiscal = UUID.randomUUID().toString();
@@ -78,11 +86,14 @@ public class GerarNotaFiscalUseCaseImpl implements GerarNotaFiscalUseCase {
                 .destinatario(pedido.getDestinatario())
                 .build();
 
+        Mono.just(registroService.registrarNotaFiscal(notaFiscal))
+                .doOnError(throwable -> log.error("Erro ao registrar a nota fiscal! Não pudemos continuar com a operação."))
+                .then();
+
         log.info("Iniciando chamadas em paralelo para os serviços");
 
         Flux<Void> resultadoComunicacaoExterna = Flux.merge(
             estoqueService.enviarNotaFiscalParaBaixaEstoque(notaFiscal).then(),
-            registroService.registrarNotaFiscal(notaFiscal).then(),
             entregaService.agendarEntrega(notaFiscal).then(),
             financeiroService.enviarNotaFiscalParaContasReceber(notaFiscal).then()
         ).doOnError(throwable -> {
@@ -92,23 +103,5 @@ public class GerarNotaFiscalUseCaseImpl implements GerarNotaFiscalUseCase {
         resultadoComunicacaoExterna.blockLast();
 
         return notaFiscal;
-    }
-
-    private static double calculaValorFreteComPercentual(Pedido pedido, Regiao regiao) {
-        double valorFrete = pedido.getValorFrete();
-        double valorFreteComPercentual = 0;
-
-        if (regiao == Regiao.NORTE) {
-            valorFreteComPercentual = valorFrete * 1.08;
-        } else if (regiao == Regiao.NORDESTE) {
-            valorFreteComPercentual = valorFrete * 1.085;
-        } else if (regiao == Regiao.CENTRO_OESTE) {
-            valorFreteComPercentual = valorFrete * 1.07;
-        } else if (regiao == Regiao.SUDESTE) {
-            valorFreteComPercentual = valorFrete * 1.048;
-        } else if (regiao == Regiao.SUL) {
-            valorFreteComPercentual = valorFrete * 1.06;
-        }
-        return valorFreteComPercentual;
     }
 }

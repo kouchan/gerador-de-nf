@@ -7,9 +7,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
 @Builder
-@AllArgsConstructor
 @Getter
-@NoArgsConstructor
 public class Pedido {
 	@JsonProperty("id_pedido")
 	private int idPedido;

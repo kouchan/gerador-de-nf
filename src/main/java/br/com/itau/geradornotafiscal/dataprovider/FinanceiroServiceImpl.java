@@ -1,5 +1,6 @@
 package br.com.itau.geradornotafiscal.dataprovider;
 
+import br.com.itau.geradornotafiscal.core.exception.ContasAReceberException;
 import br.com.itau.geradornotafiscal.core.model.NotaFiscal;
 import br.com.itau.geradornotafiscal.core.service.FinanceiroService;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +19,7 @@ public class FinanceiroServiceImpl implements FinanceiroService {
                 //Simula o envio da nota fiscal para o contas a receber
                 Thread.sleep(250);
             } catch (InterruptedException e) {
-                throw new RuntimeException(e);
+                throw new ContasAReceberException(notaFiscal);
             }
         })
                 .doOnError( throwable -> log.error("Erro ao enviar para o serviço de contas a receber"))

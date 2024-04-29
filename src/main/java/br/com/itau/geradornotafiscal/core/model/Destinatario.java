@@ -2,14 +2,13 @@ package br.com.itau.geradornotafiscal.core.model;
 
 import java.util.List;
 
+import br.com.itau.geradornotafiscal.core.model.enums.RegimeTributacaoPJ;
+import br.com.itau.geradornotafiscal.core.model.enums.TipoPessoa;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
 @Builder
 @Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
 public class Destinatario {
 	@JsonProperty("nome")
 	private String nome;
@@ -25,6 +24,7 @@ public class Destinatario {
 
 	@JsonProperty("enderecos")
 	private List<Endereco> enderecos;
+
 
 }
 

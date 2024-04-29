@@ -3,13 +3,4 @@ server:
 
 spring:
   application:
-    name: calculadoratributos
-cloud:
-  aws:
-    credentials:
-      access-key: ${AWS_CREDENTIALS_ACCESS_KEY}
-      secret-key: ${AWS_CREDENTIALS_SECRET_KEY}
-      region:
-        static: ${AWS_REGION_STATIC}
-      endpoint:
-        uri: ${AWS_ENDPOINT_URI:http://localhost:4566}
+    name: gerador-de-nf

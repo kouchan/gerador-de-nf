@@ -5,6 +5,6 @@ import br.com.itau.geradornotafiscal.core.model.Pedido;
 
 public interface GerarNotaFiscalUseCase {
 
-	public NotaFiscal gerarNotaFiscal(Pedido pedido);
+	NotaFiscal gerarNotaFiscal(Pedido pedido);
 	
 }

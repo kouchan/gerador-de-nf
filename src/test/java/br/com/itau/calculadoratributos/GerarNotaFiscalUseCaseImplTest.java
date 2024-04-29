@@ -1,24 +1,30 @@
 package br.com.itau.calculadoratributos;
 
-import br.com.itau.geradornotafiscal.core.exception.RegimeTributacaoNaoEncontrada;
+import br.com.itau.geradornotafiscal.core.exception.RegimeTributacaoException;
 import br.com.itau.geradornotafiscal.core.model.*;
+import br.com.itau.geradornotafiscal.core.model.enums.Finalidade;
+import br.com.itau.geradornotafiscal.core.model.enums.Regiao;
+import br.com.itau.geradornotafiscal.core.model.enums.RegimeTributacaoPJ;
+import br.com.itau.geradornotafiscal.core.model.enums.TipoPessoa;
 import br.com.itau.geradornotafiscal.core.service.CalculadoraAliquotaService;
 import br.com.itau.geradornotafiscal.core.service.TaxaAliquotaService;
 import br.com.itau.geradornotafiscal.core.usecase.impl.GerarNotaFiscalUseCaseImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
+@ExtendWith(MockitoExtension.class)
 public class GerarNotaFiscalUseCaseImplTest {
 
     @InjectMocks
@@ -44,26 +50,27 @@ public class GerarNotaFiscalUseCaseImplTest {
             " Quando Calcular Aliquota" +
             " Entao Gerar NF com 1 item, ValorTributoItem 0")
     public void shouldGenerateNotaFiscalForTipoPessoaFisicaWithValorTotalItensLessThan500() {
-        Pedido pedido = new Pedido();
-        pedido.setValorTotalItens(400);
-        pedido.setValorFrete(100);
-        Destinatario destinatario = new Destinatario();
-        destinatario.setTipoPessoa(TipoPessoa.FISICA);
-
         // Create and add Endereco to the Destinatario
-        Endereco endereco = new Endereco();
-        endereco.setFinalidade(Finalidade.ENTREGA);
-        endereco.setRegiao(Regiao.SUDESTE);
-        destinatario.setEnderecos(List.of(endereco));
+        Endereco endereco = Endereco.builder()
+                .finalidade(Finalidade.ENTREGA)
+                .regiao(Regiao.SUDESTE)
+                .build();
 
-        pedido.setDestinatario(destinatario);
+        Destinatario destinatario = Destinatario.builder()
+                .tipoPessoa(TipoPessoa.FISICA)
+                .enderecos(List.of(endereco)).build();
 
         // Create and add items to the Pedido
-        Item item = new Item();
-        item.setValorUnitario(100);
-        item.setQuantidade(4);
-        pedido.setItens(List.of(item));
-
+        Item item = Item.builder()
+                .valorUnitario(100)
+                .quantidade(4)
+                .build();
+        Pedido pedido = Pedido.builder()
+                .valorTotalItens(400)
+                .valorFrete(100)
+                .destinatario(destinatario)
+                .itens(List.of(item))
+                .build();
 
 
         //When calculadoraAliquotaProduto
@@ -88,28 +95,31 @@ public class GerarNotaFiscalUseCaseImplTest {
             " Quando Calcular Aliquota" +
             " Entao Gerar NF com 1 item, ValorTributoItem 0.20")
     public void shouldGenerateNotaFiscalForTipoPessoaJuridicaWithRegimeTributacaoLucroPresumidoAndValorTotalItensGreaterThan5000() {
-        Pedido pedido = new Pedido();
-        pedido.setValorTotalItens(6000);
-        pedido.setValorFrete(100);
-        Destinatario destinatario = new Destinatario();
-        destinatario.setTipoPessoa(TipoPessoa.JURIDICA);
-        destinatario.setRegimeTributacaoPJ(RegimeTributacaoPJ.LUCRO_PRESUMIDO);
 
         // Create and add Endereco to the Destinatario
-        Endereco endereco = new Endereco();
-        endereco.setFinalidade(Finalidade.ENTREGA);
-        endereco.setRegiao(Regiao.SUDESTE);
-        destinatario.setEnderecos(Arrays.asList(endereco));
+        Endereco endereco = Endereco.builder()
+                .finalidade(Finalidade.ENTREGA)
+                .regiao(Regiao.SUDESTE)
+                .build();
 
-        pedido.setDestinatario(destinatario);
+        Destinatario destinatario = Destinatario.builder()
+                .tipoPessoa(TipoPessoa.JURIDICA)
+                .regimeTributacaoPJ(RegimeTributacaoPJ.LUCRO_PRESUMIDO)
+                .enderecos(List.of(endereco)).build();
 
         // Create and add items to the Pedido
-        Item item = new Item();
-        item.setValorUnitario(1000);
-        item.setQuantidade(6);
-        pedido.setItens(Arrays.asList(item));
+        Item item = Item.builder()
+                .valorUnitario(1000)
+                .quantidade(6)
+                .build();
 
-        Double aliquotaEsperada = 0.20;
+        Pedido pedido = Pedido.builder()
+                .valorTotalItens(6000)
+                .valorFrete(100)
+                .destinatario(destinatario)
+                .itens(List.of(item)).build();
+
+        double aliquotaEsperada = 0.20;
 
         when(calculadoraAliquotaService.calcularAliquota(List.of(item), aliquotaEsperada))
                 .thenReturn(List.of(ItemNotaFiscal.builder()
@@ -122,7 +132,7 @@ public class GerarNotaFiscalUseCaseImplTest {
         when(taxaAliquotaServices.stream()
                 .filter(aliquotaService -> aliquotaService.regimeTributario(any()))
                 .findFirst()
-                .orElseThrow(() -> new RegimeTributacaoNaoEncontrada(any()))).thenReturn(taxaAliquotaService);
+                .orElseThrow(() -> new RegimeTributacaoException(any()))).thenReturn(taxaAliquotaService);
 
         NotaFiscal notaFiscal = geradorNotaFiscalService.gerarNotaFiscal(pedido);
 

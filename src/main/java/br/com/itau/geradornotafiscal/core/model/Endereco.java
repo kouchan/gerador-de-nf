@@ -1,17 +1,13 @@
 package br.com.itau.geradornotafiscal.core.model;
 
+import br.com.itau.geradornotafiscal.core.model.enums.Finalidade;
+import br.com.itau.geradornotafiscal.core.model.enums.Regiao;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Getter
-@Setter
 @Builder
-@AllArgsConstructor
-@NoArgsConstructor
 public class Endereco {
     @JsonProperty("cep")
     private String cep;

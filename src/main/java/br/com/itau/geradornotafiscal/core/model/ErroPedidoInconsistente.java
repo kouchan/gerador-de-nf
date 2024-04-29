@@ -1,9 +1,9 @@
 package br.com.itau.geradornotafiscal.core.model;
 
-public record PedidoInconsistenteErro(
+public record ErroPedidoInconsistente(
         String message,
-        String idPedido,
-        String valorTotalPedido,
-        String valorTotalItens
+        Integer idPedido,
+        Double valorTotalPedido,
+        Double valorTotalItens
 ) {
 }

@@ -10,10 +10,10 @@ import java.util.List;
 
 @Component
 public class CalculadoraAliquotaServiceImpl implements CalculadoraAliquotaService {
-    private static List<ItemNotaFiscal> itemNotaFiscalList = new ArrayList<>();
 
     @Override
     public List<ItemNotaFiscal> calcularAliquota(List<Item> items, double aliquotaPercentual) {
+        final List<ItemNotaFiscal> itemNotaFiscalList = new ArrayList<>();
 
         items.forEach(item -> {
             double valorTributo = item.getValorUnitario() * aliquotaPercentual;

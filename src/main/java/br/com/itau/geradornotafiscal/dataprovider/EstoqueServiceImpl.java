@@ -1,6 +1,6 @@
 package br.com.itau.geradornotafiscal.dataprovider;
 
-import br.com.itau.geradornotafiscal.core.exception.BaixaEstoqueOcorreuUmErro;
+import br.com.itau.geradornotafiscal.core.exception.BaixaEstoqueException;
 import br.com.itau.geradornotafiscal.core.model.NotaFiscal;
 import br.com.itau.geradornotafiscal.core.service.EstoqueService;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +19,7 @@ public class EstoqueServiceImpl implements EstoqueService {
                 //Simula envio de nota fiscal para baixa de estoque
                 Thread.sleep(380);
             } catch (InterruptedException e) {
-                throw new BaixaEstoqueOcorreuUmErro(notaFiscal);
+                throw new BaixaEstoqueException(notaFiscal);
             }
         })
                 .doOnError( throwable -> log.error("Erro ao enviar para o serviço de baixa no estoque"))
