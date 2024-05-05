@@ -1,14 +1,15 @@
 package br.com.itau.geradornotafiscal.core.service.aliquota;
 
-import br.com.itau.geradornotafiscal.core.model.enums.RegimeTributacaoPJ;
+import br.com.itau.geradornotafiscal.core.model.enums.RegimeTributacao;
+import br.com.itau.geradornotafiscal.core.model.enums.TipoPessoa;
 import br.com.itau.geradornotafiscal.core.service.TaxaAliquotaService;
 import org.springframework.stereotype.Component;
 
 @Component
 public class RegimeTributacaoLucroReal implements TaxaAliquotaService {
     @Override
-    public Boolean regimeTributario(RegimeTributacaoPJ regimeTributacaoPJ) {
-        return RegimeTributacaoPJ.LUCRO_REAL.equals(regimeTributacaoPJ);
+    public Boolean regimeTributario(RegimeTributacao regimeTributacao, TipoPessoa tipoPessoa) {
+        return RegimeTributacao.LUCRO_REAL.equals(regimeTributacao) && TipoPessoa.JURIDICA.equals(tipoPessoa);
     }
 
     @Override

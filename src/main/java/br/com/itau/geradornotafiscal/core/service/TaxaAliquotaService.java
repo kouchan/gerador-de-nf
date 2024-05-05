@@ -1,8 +1,9 @@
 package br.com.itau.geradornotafiscal.core.service;
 
-import br.com.itau.geradornotafiscal.core.model.enums.RegimeTributacaoPJ;
+import br.com.itau.geradornotafiscal.core.model.enums.RegimeTributacao;
+import br.com.itau.geradornotafiscal.core.model.enums.TipoPessoa;
 
 public interface TaxaAliquotaService {
-    Boolean regimeTributario(RegimeTributacaoPJ regimeTributacaoPJ);
+    Boolean regimeTributario(RegimeTributacao regimeTributacao, TipoPessoa tipoPessoa);
     Double calculaPercentualAliquota(Double valorTotalItens);
 }

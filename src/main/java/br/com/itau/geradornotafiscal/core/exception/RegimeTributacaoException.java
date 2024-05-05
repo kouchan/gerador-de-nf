@@ -1,13 +1,13 @@
 package br.com.itau.geradornotafiscal.core.exception;
 
-import br.com.itau.geradornotafiscal.core.model.enums.RegimeTributacaoPJ;
+import br.com.itau.geradornotafiscal.core.model.enums.RegimeTributacao;
 import lombok.Getter;
 
 @Getter
 public class RegimeTributacaoException extends RuntimeException {
-    private RegimeTributacaoPJ regimeTributacaoPJ;
-    public RegimeTributacaoException(RegimeTributacaoPJ regimeTributacaoPJ) {
-        super("Regime de tributacao PJ nao encontrada: " + regimeTributacaoPJ.toString());
-        this.regimeTributacaoPJ = regimeTributacaoPJ;
+    private RegimeTributacao regimeTributacao;
+    public RegimeTributacaoException(RegimeTributacao regimeTributacao) {
+        super("Regime de tributacao PJ nao encontrada: " + regimeTributacao.toString());
+        this.regimeTributacao = regimeTributacao;
     }
 }

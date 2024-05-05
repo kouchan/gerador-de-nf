@@ -1,6 +1,6 @@
 package br.com.itau.geradornotafiscal.core.service.aliquota;
 
-import br.com.itau.geradornotafiscal.core.model.enums.RegimeTributacaoPJ;
+import br.com.itau.geradornotafiscal.core.model.enums.RegimeTributacao;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -13,10 +13,10 @@ class RegimeTributacaoLucroPresumidoTest {
         RegimeTributacaoLucroPresumido regimeTributacaoLucroPresumido = new RegimeTributacaoLucroPresumido();
 
         // Teste para regimeTributario com LUCRO_PRESUMIDO
-        assertTrue(regimeTributacaoLucroPresumido.regimeTributario(RegimeTributacaoPJ.LUCRO_PRESUMIDO));
+        assertTrue(regimeTributacaoLucroPresumido.regimeTributario(RegimeTributacao.LUCRO_PRESUMIDO));
 
         // Teste para regimeTributario com outro regime
-        assertFalse(regimeTributacaoLucroPresumido.regimeTributario(RegimeTributacaoPJ.OUTROS));
+        assertFalse(regimeTributacaoLucroPresumido.regimeTributario(RegimeTributacao.OUTROS));
     }
 
     @Test

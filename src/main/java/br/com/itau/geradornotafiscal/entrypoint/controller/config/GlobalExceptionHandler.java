@@ -27,7 +27,7 @@ public class GlobalExceptionHandler {
     }
     @ExceptionHandler(RegimeTributacaoException.class)
     public ResponseEntity<String> handlePedidoInconsistenteErro(RegimeTributacaoException erro){
-        RegimeTributacaoException erroPedidoInconsistente = new RegimeTributacaoException(erro.getRegimeTributacaoPJ());
+        RegimeTributacaoException erroPedidoInconsistente = new RegimeTributacaoException(erro.getRegimeTributacao());
         return new ResponseEntity<>(erroPedidoInconsistente.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
     }
 }

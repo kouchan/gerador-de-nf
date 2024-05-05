@@ -1,6 +1,6 @@
 package br.com.itau.geradornotafiscal.core.service.aliquota;
 
-import br.com.itau.geradornotafiscal.core.model.enums.RegimeTributacaoPJ;
+import br.com.itau.geradornotafiscal.core.model.enums.RegimeTributacao;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -15,10 +15,10 @@ public class RegimeTributacaoSimplesNacionalTest {
         RegimeTributacaoSimplesNacional regimeTributacaoSimplesNacional = new RegimeTributacaoSimplesNacional();
 
         // Teste para regimeTributario com SIMPLES_NACIONAL
-        assertTrue(regimeTributacaoSimplesNacional.regimeTributario(RegimeTributacaoPJ.SIMPLES_NACIONAL));
+        assertTrue(regimeTributacaoSimplesNacional.regimeTributario(RegimeTributacao.SIMPLES_NACIONAL));
 
         // Teste para regimeTributario com outro regime
-        assertFalse(regimeTributacaoSimplesNacional.regimeTributario(RegimeTributacaoPJ.OUTROS));
+        assertFalse(regimeTributacaoSimplesNacional.regimeTributario(RegimeTributacao.OUTROS));
     }
 
     @Test

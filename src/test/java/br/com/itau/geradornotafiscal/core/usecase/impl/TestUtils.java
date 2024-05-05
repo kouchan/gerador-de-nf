@@ -3,27 +3,25 @@ package br.com.itau.geradornotafiscal.core.usecase.impl;
 import br.com.itau.geradornotafiscal.core.model.*;
 import br.com.itau.geradornotafiscal.core.model.enums.Finalidade;
 import br.com.itau.geradornotafiscal.core.model.enums.Regiao;
-import br.com.itau.geradornotafiscal.core.model.enums.RegimeTributacaoPJ;
+import br.com.itau.geradornotafiscal.core.model.enums.RegimeTributacao;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JSR310Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import lombok.SneakyThrows;
 
 import java.io.InputStream;
-import java.time.format.DateTimeFormatter;
 
 public class TestUtils {
 
 
     @SneakyThrows
-    public static Pedido gerarPedidoPJ(RegimeTributacaoPJ regimeTributacaoPJ,
+    public static Pedido gerarPedidoPJ(RegimeTributacao regimeTributacao,
                                        Regiao regiao, int quantidadeItem) {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
 
         InputStream inJson = Pedido.class.getResourceAsStream("src/test/resources/pedido/pj/teste-pj-"
-                +regimeTributacaoPJ.name().toLowerCase()
+                + regimeTributacao.name().toLowerCase()
                 +"-"+quantidadeItem
                 +"-"+regiao.name().toLowerCase()
                 +".json");

@@ -4,7 +4,7 @@ import br.com.itau.geradornotafiscal.core.exception.RegimeTributacaoException;
 import br.com.itau.geradornotafiscal.core.model.*;
 import br.com.itau.geradornotafiscal.core.model.enums.Finalidade;
 import br.com.itau.geradornotafiscal.core.model.enums.Regiao;
-import br.com.itau.geradornotafiscal.core.model.enums.RegimeTributacaoPJ;
+import br.com.itau.geradornotafiscal.core.model.enums.RegimeTributacao;
 import br.com.itau.geradornotafiscal.core.model.enums.TipoPessoa;
 import br.com.itau.geradornotafiscal.core.service.*;
 import org.junit.jupiter.api.BeforeEach;
@@ -103,7 +103,7 @@ class GerarNotaFiscalUseCaseImplTest {
         when(entregaService.agendarEntrega(any())).thenReturn(Mono.empty());
         when(financeiroService.enviarNotaFiscalParaContasReceber(any())).thenReturn(Mono.empty());
         when(registroService.registrarNotaFiscal(any())).thenReturn(Mono.empty());
-        when(taxaAliquotaService.regimeTributario(any(RegimeTributacaoPJ.class))).thenReturn(true);
+        when(taxaAliquotaService.regimeTributario(any(RegimeTributacao.class))).thenReturn(true);
 
         List<TaxaAliquotaService> taxaAliquotaServices = new ArrayList<>();
         taxaAliquotaServices.add(taxaAliquotaService);
@@ -120,7 +120,7 @@ class GerarNotaFiscalUseCaseImplTest {
 
         Destinatario destinatario = Destinatario.builder()
                 .tipoPessoa(TipoPessoa.JURIDICA)
-                .regimeTributacaoPJ(RegimeTributacaoPJ.SIMPLES_NACIONAL)
+                .regimeTributacao(RegimeTributacao.SIMPLES_NACIONAL)
                 .enderecos(List.of(endereco)).build();
 
         // Create and add items to the Pedido
@@ -158,7 +158,7 @@ class GerarNotaFiscalUseCaseImplTest {
         when(entregaService.agendarEntrega(any())).thenReturn(Mono.empty());
         when(financeiroService.enviarNotaFiscalParaContasReceber(any())).thenReturn(Mono.empty());
         when(registroService.registrarNotaFiscal(any())).thenReturn(Mono.empty());
-        when(taxaAliquotaService.regimeTributario(any(RegimeTributacaoPJ.class))).thenReturn(false);
+        when(taxaAliquotaService.regimeTributario(any(RegimeTributacao.class))).thenReturn(false);
 
         List<TaxaAliquotaService> taxaAliquotaServices = new ArrayList<>();
         taxaAliquotaServices.add(taxaAliquotaService);
@@ -175,7 +175,7 @@ class GerarNotaFiscalUseCaseImplTest {
 
         Destinatario destinatario = Destinatario.builder()
                 .tipoPessoa(TipoPessoa.JURIDICA)
-                .regimeTributacaoPJ(RegimeTributacaoPJ.OUTROS)
+                .regimeTributacao(RegimeTributacao.OUTROS)
                 .enderecos(List.of(endereco)).build();
 
         // Create and add items to the Pedido

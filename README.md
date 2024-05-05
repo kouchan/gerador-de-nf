@@ -11,7 +11,7 @@ O candidato é livre para aplicar quaisquer boas práticas além das solicitadas
 
 * Código difícil de manter e alterar
 * Muitas regras diferentes de cálculo e fluxo complexo
-* Classe "principal" muito instável .
+* Classe "principal" muito instável.
 * Baixa cobertura de teste e alguns estão quebrando
 
 **Problema funcional**
